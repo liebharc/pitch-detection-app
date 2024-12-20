@@ -9,7 +9,7 @@ interface PitchSetup {
 }
 interface PitchProps {
   stream: MediaStream;
-  workerConnection: Connection<{}, WorkerMethods, {}>;
+  workerConnection: Connection<{}, {}, WorkerMethods, {}>;
   detectorName: 'autocorrelation' | 'mcleod';
   windowSize: number;
   powerThreshold: number;
@@ -65,9 +65,8 @@ export function PitchMonitor({
     pitchSetup.buffer = new Float32Array(windowSize);
     pitchSetup.audioContext = new AudioContext();
     // Create an AudioNode from the stream.
-    const mediaStreamSource = pitchSetup.audioContext.createMediaStreamSource(
-      stream
-    );
+    const mediaStreamSource =
+      pitchSetup.audioContext.createMediaStreamSource(stream);
     // Connect it to the destination.
     pitchSetup.analyser = pitchSetup.audioContext.createAnalyser();
     pitchSetup.analyser.fftSize = windowSize;
@@ -83,7 +82,7 @@ export function PitchMonitor({
       const { analyser, buffer, audioContext } = pitchSetup;
       if (!analyser || !buffer || !audioContext) {
         console.warn(
-          'Trying to update the pitch, but missing an analyser/buffer/audioContext'
+          'Trying to update the pitch, but missing an analyser/buffer/audioContext',
         );
         return;
       }
@@ -95,7 +94,7 @@ export function PitchMonitor({
           buffer,
           audioContext.sampleRate,
           powerThreshold,
-          clarityThreshold
+          clarityThreshold,
         );
       const frequency = result[0];
       const clarity = result[1];
